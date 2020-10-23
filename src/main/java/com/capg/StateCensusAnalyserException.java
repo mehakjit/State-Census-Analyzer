@@ -4,7 +4,7 @@ package com.capg;
 public class StateCensusAnalyserException extends Exception{
 	
 		enum ExceptionType{
-			FILE_NOT_EXIST;
+			FILE_NOT_EXIST, WRONG_TYPE;
 		}
 		
 		ExceptionType type;
