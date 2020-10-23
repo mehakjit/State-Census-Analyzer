@@ -8,8 +8,9 @@ public class StateCensusTest {
 	public static final String CSVFilePath = "IndiaStateCensusData.csv";
 	public static final String WrongCSVFilePath = "IndiaCensusData.csv";
 	private static final String WrongTypeCSV_FilePath = "IndiaWrongTypeCensusData.txt";
-	private static final String WrongDelimiterCSV_FilePath = "IndianCensusWrongDelimiter.csv";	
- 
+	private static final String WrongDelimiterCSV_FilePath = "IndianCensusWrongDelimiter.csv";
+	private static final String WrongHeaderCSV_FilePath = "IndianCensusWrongHeader.csv";
+	
 	@Test
 	public void givenFilePath_CheckNoOfEntries_WhenEquals_ReturnTrue() {
 		int count = 0;
@@ -48,5 +49,13 @@ public class StateCensusTest {
 			Assert.assertEquals(StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 		}
 	}
-	
+	@Test
+	public void givenFilePath_WrongHeaderCSV_ShouldThrowCustomException() {
+		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
+		try{
+			stateCensusAnalyser.readCSVFile(WrongHeaderCSV_FilePath);
+		}catch (StateCensusAnalyserException e) {
+			Assert.assertEquals(StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
+		}
+	}
 }
