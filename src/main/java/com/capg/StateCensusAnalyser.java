@@ -17,7 +17,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 public class StateCensusAnalyser {
 	private static final String CSV_FILE_LOCATION = "IndiaStateCensusData.csv"; 
 	
-	public int readCSVFile(String file) {
+	public int readCSVFile(String file) throws StateCensusAnalyserException {
 		try(Reader reader = Files.newBufferedReader(Paths.get(file))){
 			CsvToBeanBuilder<IndiaStateCensus> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
 			CsvToBean<IndiaStateCensus> csvToBean = csvToBeanBuilder.withType(IndiaStateCensus.class)
@@ -29,12 +29,11 @@ public class StateCensusAnalyser {
 			}
 			return stateList.size();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new StateCensusAnalyserException(e.getMessage(),StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
 		}
-		return 0;
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException, StateCensusAnalyserException {
 		System.out.println("Welocome to Indian State Census Analyzer");
 		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 		int noOfEntries = stateCensusAnalyser.readCSVFile(CSV_FILE_LOCATION);
