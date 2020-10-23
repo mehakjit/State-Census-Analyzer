@@ -15,26 +15,29 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 
 public class StateCensusAnalyser {
-	private static final String CSV_FILE_LOCATION = "F:\\mehak\\capgemini\\IndiaCensus\\IndiaStateCensusData.csv"; 
+	private static final String CSV_FILE_LOCATION = "IndiaStateCensusData.csv"; 
 	
-	public static int readCSVFile(String file) throws FileNotFoundException{
+	public int readCSVFile(String file) {
 		try(Reader reader = Files.newBufferedReader(Paths.get(file))){
-			CsvToBeanBuilder<CsvStateCensus> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
-			CsvToBean<CsvStateCensus> csvToBean = csvToBeanBuilder.withType(CsvStateCensus.class)
+			CsvToBeanBuilder<IndiaStateCensus> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
+			CsvToBean<IndiaStateCensus> csvToBean = csvToBeanBuilder.withType(IndiaStateCensus.class)
 					                             .withIgnoreLeadingWhiteSpace(true).build();
-			Iterator<CsvStateCensus> csvStateCensusIterator = csvToBean.iterator();
-			List<CsvStateCensus> stateList = new ArrayList<CsvStateCensus>();
+			Iterator<IndiaStateCensus> csvStateCensusIterator = csvToBean.iterator();
+			List<IndiaStateCensus> stateList = new ArrayList<IndiaStateCensus>();
 			while(csvStateCensusIterator.hasNext()) {
 				stateList.add(csvStateCensusIterator.next());
 			}
 			return stateList.size();
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		System.out.println("Welocome to Indian State Census Analyzer");
-		int noOfEntries = StateCensusAnalyser.readCSVFile(CSV_FILE_LOCATION);
+		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
+		int noOfEntries = stateCensusAnalyser.readCSVFile(CSV_FILE_LOCATION);
 		System.out.println("Total Entries = " + noOfEntries);
 	}        
 }

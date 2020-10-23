@@ -2,7 +2,7 @@ package com.capg;
 
 //import com.opencsv.bean.CsvBindByName;
 
-public class CsvStateCensus {
+public class IndiaStateCensus {
 
 	public String state;
 
