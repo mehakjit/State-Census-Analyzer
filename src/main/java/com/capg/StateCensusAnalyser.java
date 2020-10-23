@@ -12,8 +12,6 @@ import java.util.List;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-
-
 public class StateCensusAnalyser {
 	private static final String CSV_FILE_LOCATION = "IndiaStateCensusData.csv"; 
 	
@@ -33,6 +31,8 @@ public class StateCensusAnalyser {
 			return stateList.size();
 		} catch (IOException e) {
 			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
+		}catch (RuntimeException e) {
+			throw new StateCensusAnalyserException("File Internal Error", StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE);
 		}
 	}
 	
