@@ -18,6 +18,9 @@ public class StateCensusAnalyser {
 	private static final String CSV_FILE_LOCATION = "IndiaStateCensusData.csv"; 
 	
 	public int readCSVFile(String file) throws StateCensusAnalyserException {
+		if( ! file.contains(".csv")){
+			throw new StateCensusAnalyserException("Not .csv file", StateCensusAnalyserException.ExceptionType.WRONG_TYPE);
+		}
 		try(Reader reader = Files.newBufferedReader(Paths.get(file))){
 			CsvToBeanBuilder<IndiaStateCensus> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
 			CsvToBean<IndiaStateCensus> csvToBean = csvToBeanBuilder.withType(IndiaStateCensus.class)
@@ -29,7 +32,7 @@ public class StateCensusAnalyser {
 			}
 			return stateList.size();
 		} catch (IOException e) {
-			throw new StateCensusAnalyserException(e.getMessage(),StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
+			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
 		}
 	}
 	
