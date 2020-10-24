@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.stream.StreamSupport;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-
-
 
 public class StateCensusAnalyser {
 	private static final String CSV_FILE_LOCATION = "IndiaStateCensusData.csv"; 
@@ -26,13 +23,15 @@ public class StateCensusAnalyser {
 			CsvToBean<IndiaStateCensus> csvToBean = csvToBeanBuilder.withType(IndiaStateCensus.class)
 					                             .withIgnoreLeadingWhiteSpace(true).build();
 			Iterator<IndiaStateCensus> csvStateCensusIterator = csvToBean.iterator();
-			List<IndiaStateCensus> stateList = new ArrayList<IndiaStateCensus>();
-			while(csvStateCensusIterator.hasNext()) {
-				stateList.add(csvStateCensusIterator.next());
-			}
-			return stateList.size();
+			Iterable<IndiaStateCensus> csvIterable = () -> csvStateCensusIterator;
+			int no_of_Entries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
+			return no_of_Entries;
 		} catch (IOException e) {
 			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
+		}catch (IllegalStateException e) {
+			throw new StateCensusAnalyserException("Unable to parse", StateCensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+		}catch (RuntimeException e) {
+			throw new StateCensusAnalyserException("File Internal Error", StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE);
 		}
 	}
 	
