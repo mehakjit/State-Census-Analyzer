@@ -14,12 +14,14 @@ import com.opencsv.bean.CsvToBeanBuilder;
 public class StateCensusAnalyser<E> {
 	public static final String STATE_CODE_FILE_PATH = "IndiaStateCode.csv";
 	
+	ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+	
 	public int readCSVFile(String file) throws StateCensusAnalyserException {
 		if( ! file.contains(".csv")){
 			throw new StateCensusAnalyserException("Not .csv file", StateCensusAnalyserException.ExceptionType.WRONG_TYPE);
 		}
 		try(Reader reader = Files.newBufferedReader(Paths.get(file))){
-			Iterator<IndiaStateCensus> csvStateCensusIterator = (Iterator<IndiaStateCensus>) new OpenCSVBuilder().getCSVFileIterator(reader, IndiaStateCensus.class);
+			Iterator<IndiaStateCensus> csvStateCensusIterator = (Iterator<IndiaStateCensus>) csvBuilder.getCSVFileIterator(reader, IndiaStateCensus.class);
 			return noOfEntries(csvStateCensusIterator);
 		} catch (IOException e) {
 			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
@@ -33,7 +35,7 @@ public class StateCensusAnalyser<E> {
 			throw new StateCensusAnalyserException("Not .csv file", StateCensusAnalyserException.ExceptionType.WRONG_TYPE);
 		}
 		try(Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))){
-			Iterator<CsvStateCode> csvStateCodeIterator = (Iterator<CsvStateCode>) new OpenCSVBuilder().getCSVFileIterator(reader, CsvStateCode.class);
+			Iterator<CsvStateCode> csvStateCodeIterator = (Iterator<CsvStateCode>) csvBuilder.getCSVFileIterator(reader, CsvStateCode.class);
 			return noOfEntries(csvStateCodeIterator);
 		}  catch (IOException e) {
 			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
