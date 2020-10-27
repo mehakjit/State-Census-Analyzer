@@ -19,7 +19,7 @@ public class StateCensusAnalyser<E> {
 			throw new StateCensusAnalyserException("Not .csv file", StateCensusAnalyserException.ExceptionType.WRONG_TYPE);
 		}
 		try(Reader reader = Files.newBufferedReader(Paths.get(file))){
-			Iterator<IndiaStateCensus> csvStateCensusIterator = this.getCSVFileIterator(reader, IndiaStateCensus.class);
+			Iterator<IndiaStateCensus> csvStateCensusIterator = (Iterator<IndiaStateCensus>) new OpenCSVBuilder().getCSVFileIterator(reader, IndiaStateCensus.class);
 			return noOfEntries(csvStateCensusIterator);
 		} catch (IOException e) {
 			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
@@ -33,7 +33,7 @@ public class StateCensusAnalyser<E> {
 			throw new StateCensusAnalyserException("Not .csv file", StateCensusAnalyserException.ExceptionType.WRONG_TYPE);
 		}
 		try(Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))){
-			Iterator<CsvStateCode> csvStateCodeIterator = this.getCSVFileIterator(reader, CsvStateCode.class);
+			Iterator<CsvStateCode> csvStateCodeIterator = (Iterator<CsvStateCode>) new OpenCSVBuilder().getCSVFileIterator(reader, CsvStateCode.class);
 			return noOfEntries(csvStateCodeIterator);
 		}  catch (IOException e) {
 			throw new StateCensusAnalyserException("File Doesn't Exist",StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST);
@@ -41,18 +41,10 @@ public class StateCensusAnalyser<E> {
 			throw new StateCensusAnalyserException("File Internal Error", StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE);
 		}
 	}
+	
 	private <E> int noOfEntries(Iterator<E> CSVFileIterator) {
 		Iterable<E> csvIterable = () -> CSVFileIterator;
 		int no_of_Entries = (int) StreamSupport.stream(csvIterable.spliterator(),false).count();
 		return no_of_Entries;
-	}
-	
-	private <E> Iterator<E> getCSVFileIterator(Reader reader, Class csvClass) throws StateCensusAnalyserException {
-		try {CsvToBean<E> csvToBean = new CsvToBeanBuilder<E>(reader).withType(csvClass).withIgnoreLeadingWhiteSpace(true)
-				.build();
-		return csvToBean.iterator();
-			}catch (IllegalStateException e) {
-				throw new StateCensusAnalyserException("Unable to parse", StateCensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
-			}
 	}
 }
