@@ -63,11 +63,12 @@ public class StateCensusTest {
 			Assert.assertEquals(CSVException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 		}
 	}
-//	@Test
-//	   public void whenSortedOnState_ShouldReturn_TrueOnAlphabeticallyFirstState() throws CSVException {
-//		stateCensusAnalyser.readCSVFile(CSVFilePath);
-//		   String sortedCensusData = stateCensusAnalyser.getStateWiseSortedCensusData();
-//		  CsvStateCensus[] censusCsv = new Gson().fromJson(sortedCensusData, CsvStateCensus[].class);
-//		  Assert.assertEquals("Andhra Pradesh", censusCsv[0].state);
-//	   }
+	@Test
+	public void whenSortedOnState_ShouldReturn_TrueOnAlphabeticallyFirstState() throws CSVException {
+		stateCensusAnalyser.readCSVFile(CSVFilePath);
+		String sortedCensusData = stateCensusAnalyser.getStateWiseSortedCensusData(CSVFilePath);
+		IndiaStateCensus[] censusCsv = new Gson().fromJson(sortedCensusData, IndiaStateCensus[].class);
+		Assert.assertEquals("Andhra Pradesh", censusCsv[0].state);
+		//Assert.assertEquals("West Bengal", censusCsv[28].state);
+	}
 }
