@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -88,6 +89,14 @@ public class StateCensusAnalyser<E> {
 					csvStateCensusList.set(j + 1, c1);
 				}	
 			}
+		}
+	}
+
+	public String getStateCodeWiseSortedCensusData() throws CSVException, IOException {
+		try (Reader reader = Files.newBufferedReader(Paths.get(STATE_CODE_FILE_PATH))) {
+			List<CsvStateCode> csvStateCodeList = csvBuilder.getCSVFileList(reader, CsvStateCode.class);
+		Collections.sort(csvStateCodeList, Comparator.comparing(code -> code.stateCode));
+		return new Gson().toJson(csvStateCodeList);
 		}
 	}
 }

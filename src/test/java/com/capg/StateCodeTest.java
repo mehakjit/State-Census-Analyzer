@@ -1,8 +1,12 @@
 package com.capg;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.gson.Gson;
 
 public class StateCodeTest {
 	 public static final String STATE_CODE_FILE_PATH = "IndiaStateCode.csv";
@@ -61,4 +65,12 @@ public class StateCodeTest {
 				Assert.assertEquals(CSVException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 			}
 		}
+		 @Test
+		   public void censusSortedOnStateCode() throws CSVException, IOException {
+			 StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
+			 stateCensusAnalyser.loadStateCode(STATE_CODE_FILE_PATH);
+			 String sortedCensusData = stateCensusAnalyser.getStateCodeWiseSortedCensusData();
+			 CsvStateCode[] censusCsv = new Gson().fromJson(sortedCensusData, CsvStateCode[].class);
+			 Assert.assertEquals("AD", censusCsv[0].stateCode);
+		   }
 }
