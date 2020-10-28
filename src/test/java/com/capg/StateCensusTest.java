@@ -2,6 +2,8 @@ package com.capg;
 
 import org.junit.Test;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -71,4 +73,10 @@ public class StateCensusTest {
 		Assert.assertEquals("Andhra Pradesh", censusCsv[0].state);
 		//Assert.assertEquals("West Bengal", censusCsv[28].state);
 	}
+	 @Test
+	   public void censusSortedOnStatePopulation() throws CSVException, IOException {
+		   String sortedCensusData = stateCensusAnalyser.getStatePopulationWiseSortedCensusData(CSVFilePath);
+		   IndiaStateCensus[] censusCsv = new Gson().fromJson(sortedCensusData, IndiaStateCensus[].class);
+		  Assert.assertEquals("Sikkim", censusCsv[28].state);
+	   }
 }

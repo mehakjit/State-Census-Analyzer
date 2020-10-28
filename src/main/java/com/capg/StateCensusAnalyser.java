@@ -19,7 +19,7 @@ public class StateCensusAnalyser<E> {
 	public static final String STATE_CODE_FILE_PATH = "IndiaStateCode.csv";
 
 	ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-	
+	List<IndiaStateCensus> csvStateCensusList;
 
 	public int readCSVFile(String file) throws CSVException {
 		if (!file.contains(".csv")) {
@@ -98,5 +98,16 @@ public class StateCensusAnalyser<E> {
 		Collections.sort(csvStateCodeList, Comparator.comparing(code -> code.stateCode));
 		return new Gson().toJson(csvStateCodeList);
 		}
+	}
+
+	public String getStatePopulationWiseSortedCensusData(String csvfilepath) throws CSVException {
+		try (Reader reader = Files.newBufferedReader(Paths.get(csvfilepath))) {
+			this.csvStateCensusList = csvBuilder.getCSVFileList(reader, IndiaStateCensus.class);
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		Collections.sort(csvStateCensusList, Comparator.comparing(census -> ((IndiaStateCensus)census).population));
+		Collections.reverse(csvStateCensusList);
+		return new Gson().toJson(csvStateCensusList);
 	}
 }
