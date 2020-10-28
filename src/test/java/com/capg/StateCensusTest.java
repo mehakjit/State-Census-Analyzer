@@ -3,6 +3,9 @@ package com.capg;
 import org.junit.Test;
 
 import org.junit.Assert;
+import org.junit.Before;
+
+import com.google.gson.Gson;
 
 public class StateCensusTest {
 	public static final String CSVFilePath = "IndiaStateCensusData.csv";
@@ -11,51 +14,61 @@ public class StateCensusTest {
 	private static final String WrongDelimiterCSV_FilePath = "IndianCensusWrongDelimiter.csv";
 	private static final String WrongHeaderCSV_FilePath = "IndianCensusWrongHeader.csv";
 	
+	private StateCensusAnalyser stateCensusAnalyser;
+	
+	@Before
+	public void initiate() {
+	stateCensusAnalyser = new StateCensusAnalyser();
+	}
+	
 	@Test
 	public void givenFilePath_CheckNoOfEntries_WhenEquals_ReturnTrue() {
 		int count = 0;
 		try{
-			StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 			count = stateCensusAnalyser.readCSVFile(CSVFilePath);
-		}catch(StateCensusAnalyserException e) {
+		}catch(CSVException e) {
 			e.printStackTrace();
 		}
 		Assert.assertEquals(count,29);
 	}
 	@Test
 	public void givenWrongFilePath_ShouldReturn_Exception() {
-		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 		try {	
 			stateCensusAnalyser.readCSVFile(WrongCSVFilePath);
-	   }catch(StateCensusAnalyserException e) {
-		   Assert.assertEquals(StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST, e.type);
+	   }catch(CSVException e) {
+		   Assert.assertEquals(CSVException.ExceptionType.FILE_NOT_EXIST, e.type);
 	   }
 	}
 	@Test
 	public void givenStateCensus_WrongType_ShouldThrowException() {
-		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 		try {
 			stateCensusAnalyser.readCSVFile(WrongTypeCSV_FilePath);
-		   }catch(StateCensusAnalyserException e) {
-			   Assert.assertEquals(StateCensusAnalyserException.ExceptionType.WRONG_TYPE, e.type);
+		   }catch(CSVException e) {
+			   Assert.assertEquals(CSVException.ExceptionType.WRONG_TYPE, e.type);
 		   }
 	}
 	@Test
 	public void givenFilePath_WrongDelimiter_ShouldThrowException() {
-		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 		try{
 			stateCensusAnalyser.readCSVFile(WrongDelimiterCSV_FilePath);
-		}catch (StateCensusAnalyserException e) {
-			Assert.assertEquals(StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
+		}catch (CSVException e) {
+			Assert.assertEquals(CSVException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 		}
 	}
 	@Test
 	public void givenFilePath_WrongHeaderCSV_ShouldThrowCustomException() {
-		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 		try{
 			stateCensusAnalyser.readCSVFile(WrongHeaderCSV_FilePath);
-		}catch (StateCensusAnalyserException e) {
-			Assert.assertEquals(StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
+		}catch (CSVException e) {
+			Assert.assertEquals(CSVException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 		}
+	}
+	@Test
+	public void whenSortedOnState_ShouldReturn_TrueOnAlphabeticallyFirstState() throws CSVException {
+		stateCensusAnalyser.readCSVFile(CSVFilePath);
+		String sortedCensusData = stateCensusAnalyser.getStateWiseSortedCensusData(CSVFilePath);
+		IndiaStateCensus[] censusCsv = new Gson().fromJson(sortedCensusData, IndiaStateCensus[].class);
+		Assert.assertEquals("Andhra Pradesh", censusCsv[0].state);
+		//Assert.assertEquals("West Bengal", censusCsv[28].state);
 	}
 }
