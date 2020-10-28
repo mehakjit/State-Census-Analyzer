@@ -19,26 +19,28 @@ public class StateCodeTest {
 	   }
 
 	   @Test
-		public void givenStateCodeCSVFile_ShouldReturnNumberOfRecords() throws StateCensusAnalyserException {
+		public void givenStateCodeCSVFile_ShouldReturnNumberOfRecords() throws CSVException {
 			int noOfEntries = stateCensusAnalyser.loadStateCode(STATE_CODE_FILE_PATH);
 			Assert.assertEquals(37, noOfEntries);
 		}
+	   
 	   @Test
 	   public void givenWrongFilePath_ShouldReturn_Exception() {
 			StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
-			try {	
-				stateCensusAnalyser.loadStateCode(WrongCSVFilePath);
-		   }catch(StateCensusAnalyserException e) {
-			   Assert.assertEquals(StateCensusAnalyserException.ExceptionType.FILE_NOT_EXIST, e.type);
+				try {
+					stateCensusAnalyser.loadStateCode(WrongCSVFilePath); 
+		   }catch(CSVException e) {
+			   Assert.assertEquals(CSVException.ExceptionType.FILE_NOT_EXIST, e.type);
 		   }
 		}
+
 		@Test
 		public void givenStateCensus_WrongType_ShouldThrowException() {
 			StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 			try {
 				stateCensusAnalyser.loadStateCode(WrongTypeCSV_FilePath);
-			   }catch(StateCensusAnalyserException e) {
-				   Assert.assertEquals(StateCensusAnalyserException.ExceptionType.WRONG_TYPE, e.type);
+			   }catch(CSVException e) {
+				   Assert.assertEquals(CSVException.ExceptionType.WRONG_TYPE, e.type);
 			   }
 		}
 		@Test
@@ -46,8 +48,8 @@ public class StateCodeTest {
 			StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 			try{
 				stateCensusAnalyser.loadStateCode(WrongDelimiterCSV_FilePath);
-			}catch (StateCensusAnalyserException e) {
-				Assert.assertEquals(StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
+			}catch (CSVException e) {
+				Assert.assertEquals(CSVException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 			}
 		}
 		@Test
@@ -55,8 +57,8 @@ public class StateCodeTest {
 			StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 			try{
 				stateCensusAnalyser.loadStateCode(WrongHeaderCSV_FilePath);
-			}catch (StateCensusAnalyserException e) {
-				Assert.assertEquals(StateCensusAnalyserException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
+			}catch (CSVException e) {
+				Assert.assertEquals(CSVException.ExceptionType.CSV_INTERNAL_ISSUE, e.type);
 			}
 		}
 }
